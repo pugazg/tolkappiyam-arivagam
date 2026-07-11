@@ -4,6 +4,7 @@ import { Bi } from "@/app/components/Bi";
 import { useMemo, useState } from "react";
 import type { SutraRecord } from "@/lib/types.ts";
 import { useUiLang } from "@/lib/useUiLang.ts";
+import { TranslitInput } from "./TranslitInput";
 
 export function IyalSutraList({ sutras }: { sutras: SutraRecord[] }) {
   const lang = useUiLang();
@@ -31,16 +32,15 @@ export function IyalSutraList({ sutras }: { sutras: SutraRecord[] }) {
 
   return (
     <div>
-      <div style={{ display: "flex", gap: "0.75rem", flexWrap: "wrap", alignItems: "center", margin: "1rem 0" }}>
-        <input
-          className="field"
-          style={{ maxWidth: "22rem" }}
-          placeholder={lang === "en" ? "Search within this chapter…" : "இந்த இயலில் தேடுக…"}
-          value={q}
-          onChange={(e) => setQ(e.target.value)}
-          aria-label={lang === "en" ? "Search within this chapter" : "இந்த இயலில் தேடுக"}
+      <div style={{ margin: "1rem 0" }}>
+        <TranslitInput
+          id="iyal-search"
+          ariaLabel={lang === "en" ? "Search within this chapter" : "இந்த இயலில் தேடுக"}
+          placeholder={lang === "en" ? "Search within this chapter… (type in English too)" : "இந்த இயலில் தேடுக… (ஆங்கிலத்திலும் தட்டச்சு செய்யலாம்)"}
+          compact
+          onTamilChange={setQ}
         />
-        <span className="muted" style={{ fontSize: "0.9rem" }}>{filtered.length} / {sutras.length}</span>
+        <span className="muted" style={{ fontSize: "0.9rem", display: "block", marginTop: "0.4rem" }}>{filtered.length} / {sutras.length}</span>
       </div>
       {concepts.length > 0 && (
         <div className="pill-row" style={{ marginBottom: "1rem" }}>

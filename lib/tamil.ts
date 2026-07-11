@@ -22,6 +22,7 @@ export type TamilClassification = {
   consonantComponent?: string | null;
   vowelLength?: "குறில்" | "நெடில்" | null;
   consonantClass?: "வல்லினம்" | "மெல்லினம்" | "இடையினம்" | null;
+  extended?: boolean;
   note: string;
 };
 
@@ -37,6 +38,12 @@ export const AYTHAM = "ஃ";
 const consonantBases: Record<string, string> = {
   "க":"க்","ங":"ங்","ச":"ச்","ஞ":"ஞ்","ட":"ட்","ண":"ண்","த":"த்","ந":"ந்",
   "ப":"ப்","ம":"ம்","ய":"ய்","ர":"ர்","ல":"ல்","வ":"வ்","ழ":"ழ்","ள":"ள்","ற":"ற்","ன":"ன்",
+};
+
+// Tamil-script extended / Grantha consonant bases (bare form -> pulli form).
+// These are NOT among Tolkāppiyam's traditional 18 மெய்யெழுத்துகள்.
+const granthaBases: Record<string, string> = {
+  "ஜ":"ஜ்","ஷ":"ஷ்","ஸ":"ஸ்","ஹ":"ஹ்","ஶ":"ஶ்",
 };
 
 const vowelSigns: Record<string, { vowel: string; length: "குறில்" | "நெடில்" }> = {
@@ -107,8 +114,17 @@ export function classifyTamilInput(inputValue: string): TamilClassification {
   const consonantComponent = consonantBases[base];
   const vowel = vowelSigns[sign];
 
-  if (granthaLetters.has(base) || granthaLetters.has(value))
-    return { input, graphemes, recognizedTamil: true, codePoints, category: "Grantha", baseLetter: base, note: "Grantha-derived character in the Tamil block. Not counted among the core Tolkāppiyam letters here." };
+  // Tamil-script extended / Grantha consonants (ஜ ஷ ஸ ஹ ஶ), fully decomposed so
+  // downstream tools (e.g. the மாத்திரை analyser) never silently drop them.
+  const granthaPulli = granthaBases[base];
+  if (granthaPulli || granthaLetters.has(value)) {
+    const gNote = "Tamil-script extended / Grantha; not one of Tolkāppiyam's 18 மெய்யெழுத்துகள்.";
+    if (sign === "்")
+      return { input, graphemes, recognizedTamil: true, codePoints, category: "Grantha", extended: true, baseLetter: base, consonantComponent: granthaPulli ?? value, vowelComponent: null, vowelLength: null, note: gNote };
+    if (vowel)
+      return { input, graphemes, recognizedTamil: true, codePoints, category: "Grantha", extended: true, baseLetter: base, consonantComponent: granthaPulli ?? `${base}்`, vowelComponent: vowel.vowel, vowelLength: vowel.length, note: gNote };
+    return { input, graphemes, recognizedTamil: true, codePoints, category: "Grantha", extended: true, baseLetter: base, consonantComponent: granthaPulli ?? `${base}்`, note: gNote };
+  }
 
   if (consonantComponent && vowel)
     return { input, graphemes, recognizedTamil: true, codePoints, category: "உயிர்மெய்", baseLetter: base, consonantComponent, vowelComponent: vowel.vowel, vowelLength: vowel.length, consonantClass: getConsonantClass(consonantComponent), note: "Computed from Unicode composition for this educational tool." };

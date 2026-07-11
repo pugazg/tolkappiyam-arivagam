@@ -1,40 +1,35 @@
 // மாத்திரை (mora / prosodic duration) analysis.
 //
-// This module distinguishes NOMINAL (grapheme-level, isolated) மாத்திரை from
-// CONTEXTUAL (word-level) மாத்திரை, because Tamil prosodic duration is
-// context-sensitive. It implements the well-grounded rules only, and returns an
-// explicit "needs further analysis" result for forms whose value is not
-// deterministic in the tradition (e.g. ஐகாரக்/ஔகாரக் குறுக்கம், whose value is
-// documented as "1 or 1½"). See docs/matra.md for the grammatical sources.
+// Pipeline: raw input → NFC normalisation → Unicode grapheme segmentation
+// (Intl.Segmenter) → Tamil-script classification → classical / extended
+// inventory classification → vowel/consonant decomposition → nominal மாத்திரை
+// → contextual rules → total.
+//
+// Integrity rule: NO recognised grapheme is silently discarded. Every grapheme
+// is reported as one of: analysed (classical inventory), extended (Tamil-script
+// / Grantha, modern extended model), unsupported, or punctuation/space. A
+// definitive total is shown only when every meaningful grapheme is handled and
+// no value is indeterminate.
 //
 // Nominal values (Tolkāppiyam நூல் மரபு; தமிழ் இலக்கண மரபு):
-//   குறில் உயிர் / உயிர்மெய்      = 1
-//   நெடில் உயிர் / உயிர்மெய்      = 2   (ஆ ஈ ஊ ஏ ஓ; ஐ ஔ handled specially)
-//   தனி மெய் (ஒற்று)             = ½
-//   ஆய்தம்                       = ½
-//
-// Contextual rules implemented:
-//   • குற்றியலுகரம் — a வல்லினம்+உ (கு சு டு து பு று) that is the FINAL letter
-//     of a multi-letter word shortens to ½. Subtype named from what precedes it
-//     (நெடிற்றொடர் / வன்றொடர் / மென்றொடர் / இடைத்தொடர் / உயிர்த்தொடர் /
-//     ஆய்தத்தொடர்).
-//   • Word-initial ஐ / ஔ = 2 (full).
-// Explicitly NOT resolved (returns needs-analysis):
-//   • Non-initial ஐ / ஔ (ஐகாரக்/ஔகாரக் குறுக்கம் = 1 or 1½ — indeterminate).
-//   • குற்றியலிகரம், அளபெடை, மகர/ஆய்தக் குறுக்கம், and other context forms.
+//   குறில் = 1, நெடில் = 2, தனி மெய் / ஆய்தம் = ½, word-initial ஐ/ஔ = 2.
+// Extended (Grantha) values are a MODERN EXTENDED calculation, clearly labelled
+// and never presented as source-grounded Tolkāppiyam grammar.
 
-import { classifyTamilInput } from "./tamil.ts";
+import { classifyTamilInput, type TamilClassification } from "./tamil.ts";
 
 export type MatraConfidence = "high" | "medium" | "needs-review";
+export type MatraStatus = "analysed" | "extended" | "unsupported" | "punctuation";
 
 export type MatraPart = {
   grapheme: string;
+  status: MatraStatus;
   baseConsonant: string | null;
   vowel: string | null;
   category: string;
-  nominal: number | null; // grapheme-level (isolated) value
-  contextual: number | null; // word-level value; null = indeterminate
-  rule: string | null; // detected contextual rule (Tamil)
+  nominal: number | null;
+  contextual: number | null;
+  rule: string | null;
   ruleEnglish: string | null;
   confidence: MatraConfidence;
   note: string;
@@ -43,13 +38,25 @@ export type MatraPart = {
 export type MatraAnalysis = {
   word: string;
   parts: MatraPart[];
-  total: number | null; // null when the word cannot be reliably totalled
+  total: number | null;
   analyzable: boolean;
-  message: string | null; // Tamil message when not analyzable
+  message: string | null;
+  // Integrity metadata — proves no grapheme was lost.
+  inputGraphemeCount: number;
+  analysedGraphemeCount: number;
+  ignoredGraphemes: string[];
+  unsupportedGraphemes: string[];
+  hasExtended: boolean;
 };
 
 const NEEDS_ANALYSIS =
   "இந்தச் சொல்லின் மாத்திரை அமைப்புக்கு மேலும் இலக்கணச் சூழல் ஆய்வு தேவை.";
+const INCOMPLETE =
+  "இந்தச் சொல்லின் சில எழுத்துகளை தற்போதைய பகுப்பாய்வி முழுமையாகக் கையாளவில்லை.";
+const EXTENDED_NOTE =
+  "நவீன விரிவாக்கக் கணிப்பு; தொல்காப்பியத்தின் பதினெண் மெய்யெழுத்து வகைப்பாட்டின் பகுதி அல்ல.";
+
+const CLASSICAL = new Set(["உயிரெழுத்து", "உயிர்மெய்", "மெய்யெழுத்து", "ஆய்த எழுத்து"]);
 
 function segment(input: string): string[] {
   if (typeof Intl !== "undefined" && "Segmenter" in Intl) {
@@ -59,32 +66,30 @@ function segment(input: string): string[] {
   return Array.from(input.normalize("NFC"));
 }
 
-function nominalValue(c: ReturnType<typeof classifyTamilInput>): number | null {
-  if (c.category === "மெய்யெழுத்து") return 0.5;
-  if (c.category === "ஆய்த எழுத்து") return 0.5;
+function nominalClassical(c: TamilClassification): number | null {
+  if (c.category === "மெய்யெழுத்து" || c.category === "ஆய்த எழுத்து") return 0.5;
   if (c.category === "உயிரெழுத்து" || c.category === "உயிர்மெய்") {
-    if (c.vowelComponent === "ஐ" || c.vowelComponent === "ஔ") return 2; // nominal full
+    if (c.vowelComponent === "ஐ" || c.vowelComponent === "ஔ") return 2;
     if (c.vowelLength === "நெடில்") return 2;
     if (c.vowelLength === "குறில்") return 1;
   }
   return null;
 }
 
-// Name the குற்றியலுகரம் subtype from the preceding part.
-function kutriyalukaramSubtype(prev: ReturnType<typeof classifyTamilInput> | null): {
-  ta: string;
-  en: string;
-} {
+// Modern extended model for Tamil-script / Grantha graphemes.
+function nominalExtended(c: TamilClassification): number {
+  if (!c.vowelComponent) return 0.5; // pure Grantha consonant, e.g. ஸ்
+  if (c.vowelLength === "நெடில்") return 2; // e.g. ஸா
+  return 1; // e.g. ஸ (inherent அ), ஸி
+}
+
+function kutriyalukaramSubtype(prev: TamilClassification | null) {
   if (!prev) return { ta: "குற்றியலுகரம்", en: "kuṟṟiyalukaram" };
-  if (prev.category === "ஆய்த எழுத்து")
-    return { ta: "ஆய்தத்தொடர்க் குற்றியலுகரம்", en: "āytat-toṭar kuṟṟiyalukaram" };
+  if (prev.category === "ஆய்த எழுத்து") return { ta: "ஆய்தத்தொடர்க் குற்றியலுகரம்", en: "āytat-toṭar kuṟṟiyalukaram" };
   if (prev.category === "மெய்யெழுத்து") {
-    if (prev.consonantClass === "வல்லினம்")
-      return { ta: "வன்றொடர்க் குற்றியலுகரம்", en: "vaṉṟoṭar kuṟṟiyalukaram" };
-    if (prev.consonantClass === "மெல்லினம்")
-      return { ta: "மென்றொடர்க் குற்றியலுகரம்", en: "meṉṟoṭar kuṟṟiyalukaram" };
-    if (prev.consonantClass === "இடையினம்")
-      return { ta: "இடைத்தொடர்க் குற்றியலுகரம்", en: "iṭaittoṭar kuṟṟiyalukaram" };
+    if (prev.consonantClass === "வல்லினம்") return { ta: "வன்றொடர்க் குற்றியலுகரம்", en: "vaṉṟoṭar kuṟṟiyalukaram" };
+    if (prev.consonantClass === "மெல்லினம்") return { ta: "மென்றொடர்க் குற்றியலுகரம்", en: "meṉṟoṭar kuṟṟiyalukaram" };
+    if (prev.consonantClass === "இடையினம்") return { ta: "இடைத்தொடர்க் குற்றியலுகரம்", en: "iṭaittoṭar kuṟṟiyalukaram" };
   }
   if (prev.category === "உயிரெழுத்து" || prev.category === "உயிர்மெய்") {
     if (prev.vowelLength === "நெடில்" || prev.vowelComponent === "ஐ" || prev.vowelComponent === "ஔ")
@@ -94,50 +99,64 @@ function kutriyalukaramSubtype(prev: ReturnType<typeof classifyTamilInput> | nul
   return { ta: "குற்றியலுகரம்", en: "kuṟṟiyalukaram" };
 }
 
+function statusOf(g: string, c: TamilClassification): MatraStatus {
+  if (/^\s+$/u.test(g)) return "punctuation";
+  if (/^[\p{P}\p{S}]+$/u.test(g)) return "punctuation";
+  if (CLASSICAL.has(c.category)) return "analysed";
+  if (c.category === "Grantha") return "extended";
+  return "unsupported"; // numerals, Latin, emoji, unclassified Tamil symbols
+}
+
 export function analyzeMatra(input: string): MatraAnalysis {
   const graphemes = segment((input ?? "").trim());
-  const classified = graphemes.map((g) => ({ g, c: classifyTamilInput(g) }));
-  // Keep only recognised Tamil letters for prosodic analysis.
-  const letters = classified.filter(
-    ({ c }) =>
-      c.category === "உயிரெழுத்து" ||
-      c.category === "உயிர்மெய்" ||
-      c.category === "மெய்யெழுத்து" ||
-      c.category === "ஆய்த எழுத்து",
-  );
-  const n = letters.length;
-  const parts: MatraPart[] = [];
+  const entries = graphemes.map((g) => {
+    const c = classifyTamilInput(g);
+    return { g, c, status: statusOf(g, c) };
+  });
+
+  // Letters that carry மாத்திரை, in order (classical + extended).
+  const letters = entries.filter((e) => e.status === "analysed" || e.status === "extended");
+  const L = letters.length;
+  const partOf = new Map<(typeof entries)[number], MatraPart>();
   let indeterminate = false;
 
-  letters.forEach(({ g, c }, i) => {
-    const nominal = nominalValue(c);
+  letters.forEach((e, k) => {
+    const c = e.c;
+    if (e.status === "extended") {
+      const nominal = nominalExtended(c);
+      partOf.set(e, {
+        grapheme: e.g,
+        status: "extended",
+        baseConsonant: c.consonantComponent ?? c.baseLetter ?? null,
+        vowel: c.vowelComponent ?? null,
+        category: "Tamil-script extended / Grantha",
+        nominal,
+        contextual: nominal,
+        rule: "நவீன விரிவாக்கக் கணிப்பு",
+        ruleEnglish: "modern extended calculation",
+        confidence: "medium",
+        note: EXTENDED_NOTE,
+      });
+      return;
+    }
+    const nominal = nominalClassical(c);
     let contextual = nominal;
     let rule: string | null = null;
     let ruleEnglish: string | null = null;
     let confidence: MatraConfidence = "high";
     let note = c.note;
-
-    const isFinal = i === n - 1;
-    const isVallinamU =
-      c.category === "உயிர்மெய்" && c.consonantClass === "வல்லினம்" && c.vowelComponent === "உ";
-
-    // Rule 1: word-final வல்லினம்+உ in a multi-letter word → குற்றியலுகரம் (½).
-    if (isFinal && isVallinamU && n >= 2) {
-      const prev = letters[i - 1]?.c ?? null;
+    const isFinal = k === L - 1;
+    const isVallinamU = c.category === "உயிர்மெய்" && c.consonantClass === "வல்லினம்" && c.vowelComponent === "உ";
+    if (isFinal && isVallinamU && L >= 2) {
+      const prev = letters[k - 1]?.c ?? null;
       const sub = kutriyalukaramSubtype(prev);
       contextual = 0.5;
       rule = sub.ta;
       ruleEnglish = sub.en;
       confidence = "high";
       note = "சொல்லிறுதியில் வல்லின உகரம் குறுகி அரை மாத்திரையாகிறது.";
-    } else if (isVallinamU && n === 1) {
-      // Isolated வல்லினம்+உ: report the nominal குறில் உயிர்மெய் value only,
-      // with NO word-final contextual rule applied (it is not a word).
-      note = "தனி எழுத்தாக இது குறில் உயிர்மெய்; சொல்லிறுதி விதி எதுவும் பொருந்தாது.";
     }
-
-    // Rule 2: non-initial ஐ / ஔ → ஐகாரக்/ஔகாரக் குறுக்கம் = 1 or 1½ (indeterminate).
-    if ((c.vowelComponent === "ஐ" || c.vowelComponent === "ஔ") && i > 0) {
+    if ((c.vowelComponent === "ஐ" || c.vowelComponent === "ஔ") && k > 0) {
       contextual = null;
       rule = c.vowelComponent === "ஐ" ? "ஐகாரக் குறுக்கம்" : "ஔகாரக் குறுக்கம்";
       ruleEnglish = c.vowelComponent === "ஐ" ? "aikārak kuṟukkam" : "aukārak kuṟukkam";
@@ -145,11 +164,9 @@ export function analyzeMatra(input: string): MatraAnalysis {
       note = "சொல்முதல் அல்லாத ஐ/ஔ 1 அல்லது 1½ மாத்திரையாகக் குறுகும் — மதிப்பு உறுதியற்றது.";
       indeterminate = true;
     }
-
-    if (contextual === null && !indeterminate) indeterminate = true;
-
-    parts.push({
-      grapheme: g,
+    partOf.set(e, {
+      grapheme: e.g,
+      status: "analysed",
       baseConsonant: c.consonantComponent ?? null,
       vowel: c.vowelComponent ?? null,
       category: c.category,
@@ -162,14 +179,53 @@ export function analyzeMatra(input: string): MatraAnalysis {
     });
   });
 
-  if (!parts.length) {
-    return { word: input, parts, total: null, analyzable: false, message: "தமிழ் எழுத்து இல்லை." };
-  }
-  if (indeterminate || parts.some((p) => p.contextual === null)) {
-    return { word: input, parts, total: null, analyzable: false, message: NEEDS_ANALYSIS };
-  }
-  const total = parts.reduce((s, p) => s + (p.contextual ?? 0), 0);
-  return { word: input, parts, total, analyzable: true, message: null };
+  const ignoredGraphemes: string[] = [];
+  const unsupportedGraphemes: string[] = [];
+  const parts: MatraPart[] = entries.map((e) => {
+    if (e.status === "analysed" || e.status === "extended") return partOf.get(e)!;
+    if (e.status === "punctuation") ignoredGraphemes.push(e.g);
+    else unsupportedGraphemes.push(e.g);
+    return {
+      grapheme: e.g,
+      status: e.status,
+      baseConsonant: null,
+      vowel: null,
+      category: e.status === "punctuation" ? "punctuation / space" : e.c.category,
+      nominal: null,
+      contextual: null,
+      rule: null,
+      ruleEnglish: null,
+      confidence: "needs-review",
+      note:
+        e.status === "punctuation"
+          ? "இடைவெளி/நிறுத்தக்குறி — மாத்திரை கணக்கில் சேர்க்கப்படவில்லை."
+          : "இந்த எழுத்தை பகுப்பாய்வி இன்னும் கையாளவில்லை.",
+    };
+  });
+
+  const inputGraphemeCount = entries.length;
+  const analysedGraphemeCount = letters.length;
+  const meaningfulCount = entries.filter((e) => e.status !== "punctuation").length;
+  const hasExtended = letters.some((e) => e.status === "extended");
+  const base = {
+    word: input,
+    parts,
+    inputGraphemeCount,
+    analysedGraphemeCount,
+    ignoredGraphemes,
+    unsupportedGraphemes,
+    hasExtended,
+  };
+
+  if (!letters.length) return { ...base, total: null, analyzable: false, message: "தமிழ் எழுத்து இல்லை." };
+  // Never total after dropping a meaningful grapheme.
+  if (unsupportedGraphemes.length > 0 || analysedGraphemeCount < meaningfulCount)
+    return { ...base, total: null, analyzable: false, message: INCOMPLETE };
+  if (indeterminate || letters.some((e) => partOf.get(e)!.contextual === null))
+    return { ...base, total: null, analyzable: false, message: NEEDS_ANALYSIS };
+
+  const total = letters.reduce((s, e) => s + (partOf.get(e)!.contextual ?? 0), 0);
+  return { ...base, total, analyzable: true, message: null };
 }
 
 // Format a மாத்திரை number with the traditional vulgar fractions.

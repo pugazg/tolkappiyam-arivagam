@@ -35,6 +35,24 @@ export function MatraExplorer() {
         </div>
       )}
 
+      {a.hasExtended && (
+        <div className="notice" style={{ marginTop: "1rem", borderLeftColor: "var(--gold)" }}>
+          <Bi
+            ta={<>இந்தக் கணிப்பில் கிரந்த/நீட்டிய தமிழ் எழுத்து(கள்) <strong>நவீன விரிவாக்க விதியின்</strong> கீழ் கணக்கிடப்பட்டுள்ளன — தொல்காப்பியத்தின் பதினெண் மெய்யெழுத்து வகைப்பாட்டின் பகுதி அல்ல.</>}
+            en={<>One or more Tamil-script extended / Grantha letters here were counted under the <strong>modern extended rule</strong> — not part of Tolkāppiyam's classical 18-consonant inventory.</>}
+          />
+        </div>
+      )}
+
+      {a.unsupportedGraphemes.length > 0 && (
+        <div className="notice" style={{ marginTop: "1rem", borderLeftColor: "var(--accent)" }}>
+          <Bi
+            ta={<>கையாளப்படாத எழுத்து(கள்): <strong className="tamil-serif">{a.unsupportedGraphemes.join(" ")}</strong>. இவை முழுமையாக பகுப்பாய்வு செய்யப்படாததால் உறுதியான மொத்தம் காட்டப்படவில்லை.</>}
+            en={<>Unhandled grapheme(s): <strong className="tamil-serif">{a.unsupportedGraphemes.join(" ")}</strong>. A definitive total is withheld because they are not fully analysed (no grapheme is silently dropped).</>}
+          />
+        </div>
+      )}
+
       <div className="matra-result" style={{ overflowX: "auto", marginTop: "1.25rem" }}>
         <table className="data-table">
           <thead>
@@ -80,11 +98,17 @@ export function MatraExplorer() {
           <div className="notice" style={{ borderLeftColor: "var(--warn)" }}>
             <p className="tamil" style={{ margin: 0, color: "var(--ink-soft)" }}>{a.message}</p>
             <p className="muted" style={{ margin: "0.35rem 0 0", fontSize: "0.85rem" }}>
-              A definitive total is withheld because a form in this word (e.g. non-initial ஐ/ஔ, ஐகாரக்/ஔகாரக் குறுக்கம்)
-              does not have a single agreed மாத்திரை value in the tradition. Per-letter nominal values are still shown above.
+              <Bi
+                ta="ஒரு உறுதியான மொத்தம் நிறுத்திவைக்கப்பட்டுள்ளது — ஒன்று அல்லது மேற்பட்ட எழுத்துகளுக்கு மரபில் ஒரே மதிப்பு இல்லை, அல்லது பகுப்பாய்வி அவற்றை முழுமையாகக் கையாளவில்லை. ஒவ்வொரு எழுத்தின் அடிப்படை மதிப்பும் மேலே காட்டப்பட்டுள்ளது."
+                en="A definitive total is withheld — one or more graphemes either have no single agreed மாத்திரை value in the tradition, or are not fully handled by the analyser. Every grapheme is still shown above; none is silently dropped."
+              />
             </p>
           </div>
         )}
+        <p className="muted" style={{ fontSize: "0.75rem", marginTop: "0.6rem" }}>
+          <Bi ta="எழுத்து ஒருமைப்பாடு" en="Grapheme integrity" />: {a.analysedGraphemeCount}/{a.inputGraphemeCount - a.ignoredGraphemes.length} <Bi ta="பொருள்தரு எழுத்துகள் பகுப்பாய்வு செய்யப்பட்டன" en="meaningful graphemes analysed" />
+          {a.ignoredGraphemes.length > 0 ? ` · ${a.ignoredGraphemes.length} ignored (punctuation/space)` : ""}
+        </p>
       </div>
 
       <div className="notice notice-accent" style={{ marginTop: "1.25rem" }}>
