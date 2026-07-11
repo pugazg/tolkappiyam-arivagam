@@ -1,0 +1,109 @@
+{
+  "generatedAt": "2026-07-11T10:22:42.667Z",
+  "sourceUrl": "https://www.projectmadurai.org/pm_etexts/utf8/pmuni0100.html",
+  "sourceFile": "data/source/project-madurai-pmuni0100.html",
+  "totalAdhikaramsFound": 3,
+  "totalIyalsFound": 27,
+  "totalSutrasExtracted": 1602,
+  "highConfidenceSutras": 1597,
+  "mediumConfidenceSutras": 5,
+  "lowConfidenceSutras": 0,
+  "warnings": [
+    {
+      "id": "warn-0001",
+      "severity": "info",
+      "scope": "iyal",
+      "message": "Source heading \"தொகைமரபு\" differs from editorial display label \"தொகை மரபு\".",
+      "relatedId": "ezhuthu-thogaimarabu",
+      "sourceLine": 952
+    },
+    {
+      "id": "warn-0002",
+      "severity": "info",
+      "scope": "iyal",
+      "message": "Source heading \"உயிர்மயங்கியல்\" differs from editorial display label \"உயிர் மயங்கியல்\".",
+      "relatedId": "ezhuthu-uyirmayangiyal",
+      "sourceLine": 1376
+    },
+    {
+      "id": "warn-0003",
+      "severity": "info",
+      "scope": "iyal",
+      "message": "Source heading \"புள்ளிமயங்கியல்\" differs from editorial display label \"புள்ளி மயங்கியல்\".",
+      "relatedId": "ezhuthu-pullimayangiyal",
+      "sourceLine": 1823
+    },
+    {
+      "id": "warn-0004",
+      "severity": "info",
+      "scope": "iyal",
+      "message": "Source heading \"குற்றியலுகரப்புணரியல்\" differs from editorial display label \"குற்றியலுகரப் புணரியல்\".",
+      "relatedId": "ezhuthu-kutriyalugarapunariyal",
+      "sourceLine": 2307
+    },
+    {
+      "id": "warn-0005",
+      "severity": "info",
+      "scope": "iyal",
+      "message": "Source heading \"வேற்றுமைமயங்கியல்\" differs from editorial display label \"வேற்றுமை மயங்கியல்\".",
+      "relatedId": "sol-vetrumaimayangiyal",
+      "sourceLine": 3268
+    },
+    {
+      "id": "warn-0006",
+      "severity": "info",
+      "scope": "iyal",
+      "message": "Source heading \"விளிமரபு\" differs from editorial display label \"விளி மரபு\".",
+      "relatedId": "sol-vilimarabu",
+      "sourceLine": 3449
+    },
+    {
+      "id": "warn-0007",
+      "severity": "warning",
+      "scope": "sutra",
+      "message": "Number 3 is attached directly to text.",
+      "relatedId": "sol-vilimarabu",
+      "sourceLine": 3468
+    },
+    {
+      "id": "warn-0008",
+      "severity": "warning",
+      "scope": "sutra",
+      "message": "Number 26 is attached directly to text.",
+      "relatedId": "porul-puraththinai",
+      "sourceLine": 5712
+    },
+    {
+      "id": "warn-0009",
+      "severity": "warning",
+      "scope": "sutra",
+      "message": "Number 1 is attached directly to text.",
+      "relatedId": "porul-kalaviyal",
+      "sourceLine": 5801
+    },
+    {
+      "id": "warn-0010",
+      "severity": "warning",
+      "scope": "sutra",
+      "message": "Number 4 is attached directly to text.",
+      "relatedId": "porul-poruliyal",
+      "sourceLine": 6863
+    },
+    {
+      "id": "warn-0011",
+      "severity": "info",
+      "scope": "iyal",
+      "message": "Source heading \"உவமயியல்\" differs from editorial display label \"உவமவியல்\".",
+      "relatedId": "porul-uvamaiyiyal",
+      "sourceLine": 7310
+    },
+    {
+      "id": "warn-0012",
+      "severity": "warning",
+      "scope": "sutra",
+      "message": "Number 6 is attached directly to text.",
+      "relatedId": "porul-seyyuliyal",
+      "sourceLine": 7532
+    }
+  ]
+}

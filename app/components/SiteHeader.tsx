@@ -23,7 +23,7 @@ export function SiteHeader() {
           <span className="b-en">Tolkāppiyam Grammar Lab</span>
         </Link>
         <LanguageToggle />
-        <button className="nav-toggle" aria-expanded={open} aria-controls="primary-nav" onClick={() => setOpen((v) => !v)}>
+        <button className="nav-toggle" aria-label="Menu / பட்டி" aria-expanded={open} aria-controls="primary-nav" onClick={() => setOpen((v) => !v)}>
           <span aria-hidden>≡</span> <span className="i18n-ta">பட்டி</span><span className="i18n-en">Menu</span>
         </button>
         <nav id="primary-nav" className={`nav-links ${open ? "open" : ""}`} aria-label="Primary">

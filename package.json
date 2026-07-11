@@ -4,10 +4,10 @@
   "private": true,
   "type": "module",
   "engines": {
-    "node": ">=20.9.0"
+    "node": "22.x"
   },
   "scripts": {
-    "setup": "node scripts/sync-source.mjs && node scripts/import-tolkappiyam.mjs",
+    "setup": "node scripts/import-tolkappiyam.mjs",
     "import:data": "node scripts/import-tolkappiyam.mjs",
     "predev": "node scripts/ensure-data.mjs",
     "dev": "next dev",

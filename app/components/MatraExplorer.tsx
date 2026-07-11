@@ -35,8 +35,8 @@ export function MatraExplorer() {
         </div>
       )}
 
-      <div style={{ overflowX: "auto", marginTop: "1.25rem" }}>
-        <table className="data-table" style={{ minWidth: "40rem" }}>
+      <div className="matra-result" style={{ overflowX: "auto", marginTop: "1.25rem" }}>
+        <table className="data-table">
           <thead>
             <tr>
               <th><Bi ta="பகுதி" en="Part" /></th>
@@ -50,14 +50,14 @@ export function MatraExplorer() {
           <tbody>
             {a.parts.map((p, i) => (
               <tr key={i}>
-                <td className="tamil-serif" style={{ fontSize: "1.3rem" }}>{p.grapheme}</td>
-                <td style={{ fontSize: "0.85rem" }}>{p.category}</td>
-                <td style={{ fontSize: "0.9rem" }}>{[p.baseConsonant, p.vowel].filter(Boolean).join(" · ") || "—"}</td>
-                <td style={{ textAlign: "right" }}>{formatMatra(p.nominal)}</td>
-                <td style={{ textAlign: "right", fontWeight: 600, color: p.contextual !== p.nominal ? "var(--accent)" : "inherit" }}>
+                <td className="tamil-serif matra-grapheme" style={{ fontSize: "1.3rem" }} data-label="பகுதி · Part">{p.grapheme}</td>
+                <td style={{ fontSize: "0.85rem" }} data-label="வகை · Category">{p.category}</td>
+                <td style={{ fontSize: "0.9rem" }} data-label="அடி · உயிர் · Base · vowel">{[p.baseConsonant, p.vowel].filter(Boolean).join(" · ") || "—"}</td>
+                <td className="matra-num" data-label="பெயரளவு · Nominal">{formatMatra(p.nominal)}</td>
+                <td className="matra-num" style={{ fontWeight: 600, color: p.contextual !== p.nominal ? "var(--accent)" : "inherit" }} data-label="சூழல் மதிப்பு · Contextual">
                   {p.contextual === null ? <Bi ta="உறுதியற்று" en="indeterminate" /> : formatMatra(p.contextual)}
                 </td>
-                <td style={{ fontSize: "0.82rem" }}>
+                <td style={{ fontSize: "0.82rem" }} data-label="விதி · குறிப்பு · Rule · note">
                   {p.rule && <div><strong>{p.rule}</strong>{p.ruleEnglish ? <span className="muted"> · {p.ruleEnglish}</span> : null}</div>}
                   <div className="muted">{p.note}</div>
                   <span className={`badge ${confBadge[p.confidence]}`} style={{ marginTop: "0.2rem" }}>

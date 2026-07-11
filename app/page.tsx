@@ -16,7 +16,7 @@ export default function Home() {
     <>
       <section className="shell hero">
         <div>
-          <p className="eyebrow">From நூற்பா to language intelligence</p>
+          <p className="eyebrow"><Bi ta="நூற்பாவிலிருந்து மொழியறிவுக்கு" en="From நூற்பா to language intelligence" /></p>
           <h1>
             தொல்காப்பிய அறிவகம்
             <span className="en">Tolkāppiyam Grammar Lab</span>
