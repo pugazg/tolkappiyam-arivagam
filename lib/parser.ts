@@ -195,6 +195,8 @@ function createSutraRecord({
     commentaryReferences: [],
     examples: [],
     relatedSutras: [],
+    scholarlyNotes: null,
+    audio: null,
     editorialStatus: "segmented",
     source: sourcePublisher,
     parsingConfidence,
