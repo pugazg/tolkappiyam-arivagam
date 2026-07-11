@@ -111,6 +111,11 @@ export default async function SutraPage({ params }: { params: Promise<{ id: stri
           <p className="muted" style={{ fontSize: "0.8rem", marginTop: "0.75rem" }}>
             Source: {s.source.publisher} · {s.source.sourceId}
           </p>
+          <p style={{ fontSize: "0.82rem", marginTop: "0.5rem" }}>
+            <a href={`/api/sutra/${s.id}`} download={`${s.id}.json`}>
+              <Bi ta="இயந்திரம் படிக்கும் JSON" en="Machine-readable JSON" /> ↓
+            </a>
+          </p>
         </div>
       </div>
 

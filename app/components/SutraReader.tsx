@@ -9,11 +9,14 @@ type Related = { id: string; number: string; text: string };
 const TABS = [
   { key: "moolam", label: "மூலம்" },
   { key: "sol", label: "சொல் பிரிப்பு" },
+  { key: "transliteration", label: "ஒலிபெயர்ப்பு" },
   { key: "eliya", label: "எளிய தமிழ்" },
   { key: "vivara", label: "விரிவான விளக்கம்" },
   { key: "english", label: "English" },
   { key: "karuthu", label: "கருத்துகள்" },
+  { key: "notes", label: "அறிஞர் குறிப்பு" },
   { key: "thodarbu", label: "தொடர்புடைய" },
+  { key: "audio", label: "ஒலி" },
 ] as const;
 
 export function SutraReader({ sutra, related }: { sutra: SutraRecord; related: Related[] }) {
@@ -48,6 +51,11 @@ export function SutraReader({ sutra, related }: { sutra: SutraRecord; related: R
             ? <p className="source-text">{sutra.wordSeparatedText}</p>
             : <EditorialPlaceholder english="Word-separated (சொல் பிரிப்பு) text is added by editors after review; it is not auto-generated." />
         )}
+        {active === "transliteration" && (
+          sutra.transliteration
+            ? <p className="prose">{sutra.transliteration}</p>
+            : <EditorialPlaceholder english="A verified romanised transliteration has not been added for this நூற்பா yet." />
+        )}
         {active === "eliya" && (
           sutra.simpleTamilExplanation
             ? <p className="prose tamil">{sutra.simpleTamilExplanation}</p>
@@ -68,6 +76,11 @@ export function SutraReader({ sutra, related }: { sutra: SutraRecord; related: R
             ? <div className="pill-row">{sutra.concepts.map((c) => <Link key={c} className="chip" href={`/search?q=${encodeURIComponent(c)}`}>{c}</Link>)}</div>
             : <EditorialPlaceholder english="No source-attested keyword concepts were detected for this நூற்பா." />
         )}
+        {active === "notes" && (
+          sutra.scholarlyNotes
+            ? <p className="prose tamil">{sutra.scholarlyNotes}</p>
+            : <EditorialPlaceholder english="Editorial / scholarly notes for this நூற்பா have not been added yet. These are distinct from the automatic parsing notes shown in the metadata." />
+        )}
         {active === "thodarbu" && (
           related.length
             ? <div>
@@ -82,6 +95,18 @@ export function SutraReader({ sutra, related }: { sutra: SutraRecord; related: R
                 ))}
               </div>
             : <EditorialPlaceholder english="No closely related நூற்பாக்கள் were detected by shared vocabulary." />
+        )}
+        {active === "audio" && (
+          sutra.audio
+            ? <div>
+                {/* eslint-disable-next-line jsx-a11y/media-has-caption */}
+                <audio controls src={sutra.audio.url} style={{ width: "100%", maxWidth: "28rem" }} />
+                <p className="muted" style={{ fontSize: "0.82rem", marginTop: "0.5rem" }}>
+                  {sutra.audio.reciter ? `ஓதியவர்: ${sutra.audio.reciter}. ` : ""}
+                  {sutra.audio.license ? `உரிமம்: ${sutra.audio.license}.` : ""}
+                </p>
+              </div>
+            : <EditorialPlaceholder english="Recited audio for this நூற்பா has not been added yet. Audio will be attached with reciter and licence details when available." />
         )}
       </div>
     </div>

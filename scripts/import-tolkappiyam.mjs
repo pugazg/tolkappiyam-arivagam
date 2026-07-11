@@ -9,38 +9,58 @@ import { buildAnalysis } from "../lib/analysis.ts";
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const SOURCE_URL = "https://www.projectmadurai.org/pm_etexts/utf8/pmuni0100.html";
-const SOURCE_NAME = "project-madurai-pmuni0100.html";
-const localSource = path.join(ROOT, "data", "source", SOURCE_NAME);
-const parentSource = path.join(ROOT, "..", "data", "source", SOURCE_NAME);
+const FETCH_NAME = "project-madurai-pmuni0100.html";
+const SOURCE_DIR = path.join(ROOT, "data", "source");
+const PARENT_DIR = path.join(ROOT, "..", "data", "source");
 const outDir = path.join(ROOT, "data", "generated");
 
 const wantFetch = process.argv.includes("--fetch");
 
+// The parser reads either the Project Madurai HTML or an equivalent plain-text /
+// markdown export (tag-stripping is a no-op on plain text). So accept any
+// .md / .txt / .html file placed in data/source/, whatever it is named.
+function findSourceFile(dir) {
+  if (!fs.existsSync(dir)) return null;
+  const files = fs
+    .readdirSync(dir)
+    .filter((f) => !f.startsWith(".") && /\.(md|markdown|txt|html?)$/i.test(f));
+  if (!files.length) return null;
+  const preferred =
+    files.find((f) => /pmuni0100/i.test(f)) ||
+    files.find((f) => /tholk|tolk|tolka|தொல்/i.test(f)) ||
+    files.find((f) => /\.html?$/i.test(f)) ||
+    files[0];
+  return path.join(dir, preferred);
+}
+
 async function resolveSource() {
-  if (fs.existsSync(localSource)) {
-    return { html: fs.readFileSync(localSource, "utf8"), from: "local" };
+  let file = findSourceFile(SOURCE_DIR);
+  if (file) return { text: fs.readFileSync(file, "utf8"), from: `local (${path.basename(file)})`, name: path.basename(file) };
+
+  file = findSourceFile(PARENT_DIR);
+  if (file) {
+    const text = fs.readFileSync(file, "utf8");
+    fs.mkdirSync(SOURCE_DIR, { recursive: true });
+    fs.writeFileSync(path.join(SOURCE_DIR, path.basename(file)), text); // become self-contained
+    return { text, from: `parent (${path.basename(file)}, copied in)`, name: path.basename(file) };
   }
-  if (fs.existsSync(parentSource)) {
-    const html = fs.readFileSync(parentSource, "utf8");
-    fs.mkdirSync(path.dirname(localSource), { recursive: true });
-    fs.writeFileSync(localSource, html); // become self-contained
-    return { html, from: "parent (copied in)" };
-  }
+
   if (wantFetch) {
     const res = await fetch(SOURCE_URL);
     if (!res.ok) throw new Error(`Fetch failed: ${res.status}`);
-    const html = await res.text();
-    fs.mkdirSync(path.dirname(localSource), { recursive: true });
-    fs.writeFileSync(localSource, html);
-    return { html, from: "network (--fetch)" };
+    const text = await res.text();
+    fs.mkdirSync(SOURCE_DIR, { recursive: true });
+    fs.writeFileSync(path.join(SOURCE_DIR, FETCH_NAME), text);
+    return { text, from: "network (--fetch)", name: FETCH_NAME };
   }
+
   throw new Error(
-    `Source not found. Place ${SOURCE_NAME} in data/source/, or run with --fetch to download from Project Madurai.`,
+    "No source found in data/source/ (looked for *.md, *.txt, *.html). Add your source file there, or run with --fetch to download from Project Madurai.",
   );
 }
 
-const { html, from } = await resolveSource();
-const parsed = parseProjectMaduraiHtml(html, `data/source/${SOURCE_NAME}`);
+const { text, from, name } = await resolveSource();
+const parsed = parseProjectMaduraiHtml(text, `data/source/${name}`);
 const analysis = buildAnalysis(parsed.sutras, parsed.sections.adhikarams, parsed.sections.iyals);
 
 fs.mkdirSync(outDir, { recursive: true });

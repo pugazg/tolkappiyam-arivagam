@@ -1,0 +1,27 @@
+{
+  "id": "tolkappiyam",
+  "titleTamil": "தொல்காப்பியம்",
+  "titleEnglish": "Tolkappiyam",
+  "projectTitleTamil": "தொல்காப்பிய அறிவகம்",
+  "projectTitleEnglish": "Tolkāppiyam Grammar Lab",
+  "tagline": "From நூற்பா to language intelligence",
+  "source": {
+    "publisher": "Project Madurai",
+    "sourceId": "pmuni0100",
+    "url": "https://www.projectmadurai.org/pm_etexts/utf8/pmuni0100.html",
+    "accessNote": "Downloaded from Project Madurai and preserved locally for this release. Runtime pages do not depend on live Project Madurai access.",
+    "attribution": "Project Madurai electronic text pmuni0100. Etext preparation and PDF version: Dr. K. Kalyanasundaram; proof-reading and web version: Mr. N. D. Logasundaram, as stated in the source header.",
+    "headerText": "தொல்காப்பியர் அருளிய தொல்காப்பியம் /tolkAppiyam of tolkAppiyar (in Tamil script, unicode format)\nதொல்காப்பியர் அருளிய\nதொல்காப்பியம்\n(இலக்கண நூல்)\ntolkAppiyam of tolkAppiyar\n(Grammar work)\nIn Tamil Script / unicode/utf-8 format\nAcknowledgements:\nEtext Preparation & PDF version: Dr.K. Kalyanasundaram, Lausanne, Switzerland\nProof-reading & Web version: Mr. N.D. Logasundaram, Chennai, Tamilnadu\n© Project Madurai, 1998-2024.\nProject Madurai is an open, voluntary, worldwide initiative devoted to preparation\nof electronic texts of\nTamil literary works and to distribute them free on the Internet.\nDetails of Project Madurai are available at the website\nhttp://www.projectmadurai.org/\nYou are welcome to freely distribute this file, provided this header page is kept intact.\nதொல்காப்பியர் அருளிய தொல்காப்பியம்\ntolkAppiyam of tolkAppiyar (moolam)\nதொல்காப்பியம் - உள்ளடக்கம்\n0.  சிறப்புப் பாயிரம்\n1. எழுத்ததிகாரம்‎ - 9\n1.1 --  நூல் மரபு\n1.2 --  மொழி மரபு\n1.3 --  பிறப்பியல்\n1.4 --  புணரியல்\n1.5 -  தொகை மரபு\n1.6 - உருபியல்\n1.7  --உயிர் மயங்கியல்\n1.8 --  புள்ளி மயங்கியல்\n1.9 -  குற்றியலுகரப் புணரியல்\n2. தொல்காப்பியம் சொல்லதிகாரம்‎  -9\n2.1--  கிளவியாக்கம்\n2.2 -- வேற்றுமையியல்\n2.3  --  வேற்றுமை மயங்கியல்\n2.4  --  விளி மரபு\n2.5  --  பெயரியல்\n2.6  --  வினையியல்\n2.7  -- இடையியல்\n2.8  -- உரியியல்\n2.9  -- எச்சவியல்\n3. தொல்காப்பியம் பொருளதிகாரம்‎ - 9\n3.1  --  அகத்திணையியல்\n3.2  --  புறத்திணையியல்\n3.3  --  களவியல்\n3.4  -- கற்பியல்\n3.5  --  பொருளியல்\n3.6  --  மெய்ப்பாட்டியல்\n3.7  --  உவமயியல்\n3.8  --  செய்யுளியல்\n3.9  --  மரபியல்",
+    "acknowledgementText": "Acknowledgements:\nEtext Preparation & PDF version: Dr.K. Kalyanasundaram, Lausanne, Switzerland\nProof-reading & Web version: Mr. N.D. Logasundaram, Chennai, Tamilnadu\n© Project Madurai, 1998-2024.\nProject Madurai is an open, voluntary, worldwide initiative devoted to preparation\nof electronic texts of\nTamil literary works and to distribute them free on the Internet.\nDetails of Project Madurai are available at the website\nhttp://www.projectmadurai.org/"
+  },
+  "counts": {
+    "adhikarams": 3,
+    "iyals": 27,
+    "sutras": 1602
+  },
+  "editorialPrinciples": [
+    "Uncertainty must be preserved, not silently corrected.",
+    "Source text, editorial annotation, and modern teaching material must remain visibly distinct.",
+    "Commentary, translation, and explanation layers require human editorial verification."
+  ]
+}

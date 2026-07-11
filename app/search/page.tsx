@@ -5,6 +5,7 @@ import { adhikarams, iyals, searchSutras } from "@/lib/data.ts";
 import { highlightSegments } from "@/lib/search.ts";
 import { Breadcrumbs } from "../components/Breadcrumbs";
 import { StatusBadge } from "../components/Badges";
+import { TranslitInput } from "../components/TranslitInput";
 
 export const metadata: Metadata = {
   title: "தேடல் · Search",
@@ -32,7 +33,15 @@ export default async function SearchPage({ searchParams }: { searchParams: SP })
       <p className="lead"><Bi ta="மூல உரை, அதிகாரம்/இயல் பெயர்கள், கருத்துகள், நிலையான அடையாளங்கள் மீது தமிழ் அறிந்த தேடல்." en="Tamil-aware search over the original text, அதிகாரம்/இயல் names, concepts, and stable IDs." /></p>
 
       <form method="get" className="card" style={{ marginTop: "1rem", display: "grid", gap: "0.75rem" }}>
-        <input className="field" type="search" name="q" defaultValue={q} placeholder="எ.கா. உயிர், மெய், புணர்ச்சி, or a நூற்பா number" aria-label="Search query" autoFocus />
+        <TranslitInput
+          id="site-search"
+          name="q"
+          ariaLabel="Search query"
+          initialTamil={q}
+          fullWidth
+          compact
+          placeholder="எ.கா. உயிர், மெய், புணர்ச்சி — or type in English (uyir, mey…)"
+        />
         <div style={{ display: "flex", gap: "0.6rem", flexWrap: "wrap" }}>
           <select className="field" name="adhikaram" defaultValue={filters.adhikaramId ?? ""} style={{ maxWidth: "16rem" }} aria-label="Filter by அதிகாரம்">
             <option value="">{"— " }அதிகாரம்{" (all)"}</option>

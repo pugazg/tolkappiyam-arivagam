@@ -80,7 +80,7 @@ data/generated/
   parsing-report.json  # counts, confidence, and warnings
 ```
 
-Generated data and the source HTML are git-ignored; regenerate them with the commands above.
+The source HTML (`data/source/*.html`) and the parsed dataset (`data/generated/*.json`) are committed to the repo, so the build reads local files and never fetches from Project Madurai. Regenerate them any time with `npm run import:data`.
 For a committed deployment, run `npm run import:data` once and commit `data/` (or rely on the
 `prebuild` step, which regenerates automatically — use `-- --fetch` on CI without the local source).
 

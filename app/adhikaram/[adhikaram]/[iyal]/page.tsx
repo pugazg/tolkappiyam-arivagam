@@ -33,18 +33,20 @@ export default async function IyalPage({ params }: { params: Promise<{ adhikaram
         { label: a.tamil, href: `/adhikaram/${a.id}` },
         { label: i.sourceTamil ?? i.tamil },
       ]} />
-      <p className="eyebrow" style={{ marginTop: "1rem" }}>{a.tamil} · இயல் {i.number} · source seq {i.sourceSequence}</p>
+      <p className="eyebrow" style={{ marginTop: "1rem" }}>
+        {a.tamil} · <Bi ta={<>இயல் {i.number} · மூல வரிசை {i.sourceSequence}</>} en={<>Chapter {i.number} · source seq {i.sourceSequence}</>} />
+      </p>
       <h1 style={{ marginTop: 0 }}>{i.sourceTamil ?? i.tamil}</h1>
       <p className="muted" style={{ marginTop: "-0.4rem" }}>{i.english} · {i.transliteration}</p>
       <p className="lead">{i.gloss}</p>
       <div className="pill-row" style={{ margin: "0.75rem 0" }}>
         <ConfidenceBadge confidence={i.parsingConfidence} />
-        <span className="chip">{sutras.length} <Bi ta="நூற்பா" en="sutras" /></span>
+        <span className="chip">{sutras.length} <Bi ta="நூற்பா" en="aphorisms" /></span>
       </div>
 
       {i.parsingNotes.length > 0 && (
         <div className="notice notice-accent" style={{ marginBottom: "1rem" }}>
-          <strong>Parsing notes:</strong>
+          <strong><Bi ta="பாகுபாட்டுக் குறிப்புகள்:" en="Parsing notes:" /></strong>
           <ul style={{ margin: "0.4rem 0 0", paddingLeft: "1.2rem" }}>
             {i.parsingNotes.map((n, k) => <li key={k}>{n}</li>)}
           </ul>

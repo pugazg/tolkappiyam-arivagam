@@ -3,8 +3,11 @@ import Link from "next/link";
 import { Bi } from "@/app/components/Bi";
 import { useMemo, useState } from "react";
 import type { SutraRecord } from "@/lib/types.ts";
+import { useUiLang } from "@/lib/useUiLang.ts";
+import { TranslitInput } from "./TranslitInput";
 
 export function IyalSutraList({ sutras }: { sutras: SutraRecord[] }) {
+  const lang = useUiLang();
   const [q, setQ] = useState("");
   const [concept, setConcept] = useState<string | null>(null);
 
@@ -29,16 +32,15 @@ export function IyalSutraList({ sutras }: { sutras: SutraRecord[] }) {
 
   return (
     <div>
-      <div style={{ display: "flex", gap: "0.75rem", flexWrap: "wrap", alignItems: "center", margin: "1rem 0" }}>
-        <input
-          className="field"
-          style={{ maxWidth: "22rem" }}
-          placeholder="இந்த இயலில் தேடுக…"
-          value={q}
-          onChange={(e) => setQ(e.target.value)}
-          aria-label="Search within this iyal"
+      <div style={{ margin: "1rem 0" }}>
+        <TranslitInput
+          id="iyal-search"
+          ariaLabel={lang === "en" ? "Search within this chapter" : "இந்த இயலில் தேடுக"}
+          placeholder={lang === "en" ? "Search within this chapter… (type in English too)" : "இந்த இயலில் தேடுக… (ஆங்கிலத்திலும் தட்டச்சு செய்யலாம்)"}
+          compact
+          onTamilChange={setQ}
         />
-        <span className="muted" style={{ fontSize: "0.9rem" }}>{filtered.length} / {sutras.length}</span>
+        <span className="muted" style={{ fontSize: "0.9rem", display: "block", marginTop: "0.4rem" }}>{filtered.length} / {sutras.length}</span>
       </div>
       {concepts.length > 0 && (
         <div className="pill-row" style={{ marginBottom: "1rem" }}>
@@ -50,6 +52,12 @@ export function IyalSutraList({ sutras }: { sutras: SutraRecord[] }) {
           ))}
         </div>
       )}
+      <p className="muted" style={{ fontSize: "0.82rem", borderLeft: "3px solid var(--line-strong)", paddingLeft: "0.75rem", margin: "0 0 0.5rem" }}>
+        <Bi
+          ta="கீழே உள்ள நூற்பாக்கள் மூலத் தமிழில் உள்ளன. ஆங்கில விளக்கம்/மொழிபெயர்ப்பு பதிப்பாசிரிய அடுக்கு — சரிபார்க்கப்பட்ட பிறகு சேர்க்கப்படும்."
+          en="The நூற்பாக்கள் below are shown in the original Tamil source. English translations/explanations are an editorial layer, added only after verification — the source text is never machine-translated."
+        />
+      </p>
       <div>
         {filtered.map((s) => (
           <Link key={s.id} href={`/sutra/${s.id}`} className="sutra-item" style={{ textDecoration: "none", color: "inherit" }}>

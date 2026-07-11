@@ -1,0 +1,632 @@
+{
+  "generatedAt": "2026-07-11T10:22:42.729Z",
+  "totalSutras": 1602,
+  "totalWords": 17901,
+  "uniqueWords": 5793,
+  "totalTamilLetters": 65321,
+  "averageWordsPerSutra": 11.2,
+  "averageLinesPerSutra": 2.5,
+  "longestSutraId": "porul-karpiyal-005",
+  "shortestSutraId": "sol-vilimarabu-006",
+  "perAdhikaram": [
+    {
+      "id": "ezhuthu",
+      "tamil": "எழுத்ததிகாரம்",
+      "sutras": 483,
+      "words": 4617,
+      "uniqueWords": 1314,
+      "averageWordsPerSutra": 9.6
+    },
+    {
+      "id": "sol",
+      "tamil": "சொல்லதிகாரம்",
+      "sutras": 463,
+      "words": 4564,
+      "uniqueWords": 1733,
+      "averageWordsPerSutra": 9.9
+    },
+    {
+      "id": "porul",
+      "tamil": "பொருளதிகாரம்",
+      "sutras": 656,
+      "words": 8720,
+      "uniqueWords": 4082,
+      "averageWordsPerSutra": 13.3
+    }
+  ],
+  "perIyal": [
+    {
+      "id": "ezhuthu-noolmarabu",
+      "tamil": "நூல் மரபு",
+      "adhikaramId": "ezhuthu",
+      "sutras": 33,
+      "words": 297
+    },
+    {
+      "id": "ezhuthu-mozhimarabu",
+      "tamil": "மொழி மரபு",
+      "adhikaramId": "ezhuthu",
+      "sutras": 49,
+      "words": 378
+    },
+    {
+      "id": "ezhuthu-pirappiyal",
+      "tamil": "பிறப்பியல்",
+      "adhikaramId": "ezhuthu",
+      "sutras": 21,
+      "words": 245
+    },
+    {
+      "id": "ezhuthu-punariyal",
+      "tamil": "புணரியல்",
+      "adhikaramId": "ezhuthu",
+      "sutras": 40,
+      "words": 455
+    },
+    {
+      "id": "ezhuthu-thogaimarabu",
+      "tamil": "தொகை மரபு",
+      "adhikaramId": "ezhuthu",
+      "sutras": 30,
+      "words": 500
+    },
+    {
+      "id": "ezhuthu-urubiyal",
+      "tamil": "உருபியல்",
+      "adhikaramId": "ezhuthu",
+      "sutras": 30,
+      "words": 320
+    },
+    {
+      "id": "ezhuthu-uyirmayangiyal",
+      "tamil": "உயிர் மயங்கியல்",
+      "adhikaramId": "ezhuthu",
+      "sutras": 93,
+      "words": 778
+    },
+    {
+      "id": "ezhuthu-pullimayangiyal",
+      "tamil": "புள்ளி மயங்கியல்",
+      "adhikaramId": "ezhuthu",
+      "sutras": 110,
+      "words": 853
+    },
+    {
+      "id": "ezhuthu-kutriyalugarapunariyal",
+      "tamil": "குற்றியலுகரப் புணரியல்",
+      "adhikaramId": "ezhuthu",
+      "sutras": 77,
+      "words": 791
+    },
+    {
+      "id": "sol-kilaviyakkam",
+      "tamil": "கிளவியாக்கம்",
+      "adhikaramId": "sol",
+      "sutras": 62,
+      "words": 647
+    },
+    {
+      "id": "sol-vetrumaiyiyal",
+      "tamil": "வேற்றுமையியல்",
+      "adhikaramId": "sol",
+      "sutras": 22,
+      "words": 386
+    },
+    {
+      "id": "sol-vetrumaimayangiyal",
+      "tamil": "வேற்றுமை மயங்கியல்",
+      "adhikaramId": "sol",
+      "sutras": 35,
+      "words": 386
+    },
+    {
+      "id": "sol-vilimarabu",
+      "tamil": "விளி மரபு",
+      "adhikaramId": "sol",
+      "sutras": 37,
+      "words": 293
+    },
+    {
+      "id": "sol-peyariyal",
+      "tamil": "பெயரியல்",
+      "adhikaramId": "sol",
+      "sutras": 43,
+      "words": 581
+    },
+    {
+      "id": "sol-vinaiyiyal",
+      "tamil": "வினையியல்",
+      "adhikaramId": "sol",
+      "sutras": 51,
+      "words": 638
+    },
+    {
+      "id": "sol-idaiyiyal",
+      "tamil": "இடையியல்",
+      "adhikaramId": "sol",
+      "sutras": 48,
+      "words": 470
+    },
+    {
+      "id": "sol-uriyiyal",
+      "tamil": "உரியியல்",
+      "adhikaramId": "sol",
+      "sutras": 98,
+      "words": 497
+    },
+    {
+      "id": "sol-echaviyal",
+      "tamil": "எச்சவியல்",
+      "adhikaramId": "sol",
+      "sutras": 67,
+      "words": 666
+    },
+    {
+      "id": "porul-akaththinai",
+      "tamil": "அகத்திணையியல்",
+      "adhikaramId": "porul",
+      "sutras": 58,
+      "words": 686
+    },
+    {
+      "id": "porul-puraththinai",
+      "tamil": "புறத்திணையியல்",
+      "adhikaramId": "porul",
+      "sutras": 30,
+      "words": 1017
+    },
+    {
+      "id": "porul-kalaviyal",
+      "tamil": "களவியல்",
+      "adhikaramId": "porul",
+      "sutras": 51,
+      "words": 1087
+    },
+    {
+      "id": "porul-karpiyal",
+      "tamil": "கற்பியல்",
+      "adhikaramId": "porul",
+      "sutras": 53,
+      "words": 1178
+    },
+    {
+      "id": "porul-poruliyal",
+      "tamil": "பொருளியல்",
+      "adhikaramId": "porul",
+      "sutras": 52,
+      "words": 634
+    },
+    {
+      "id": "porul-meyppattiyal",
+      "tamil": "மெய்ப்பாட்டியல்",
+      "adhikaramId": "porul",
+      "sutras": 27,
+      "words": 418
+    },
+    {
+      "id": "porul-uvamaiyiyal",
+      "tamil": "உவமவியல்",
+      "adhikaramId": "porul",
+      "sutras": 38,
+      "words": 345
+    },
+    {
+      "id": "porul-seyyuliyal",
+      "tamil": "செய்யுளியல்",
+      "adhikaramId": "porul",
+      "sutras": 235,
+      "words": 2211
+    },
+    {
+      "id": "porul-marabiyal",
+      "tamil": "மரபியல்",
+      "adhikaramId": "porul",
+      "sutras": 112,
+      "words": 1144
+    }
+  ],
+  "topWords": [
+    {
+      "word": "கிளவி",
+      "count": 209
+    },
+    {
+      "word": "நிலை",
+      "count": 99
+    },
+    {
+      "word": "மருங்கின்",
+      "count": 94
+    },
+    {
+      "word": "வரூஉம்",
+      "count": 91
+    },
+    {
+      "word": "கிளவியும்",
+      "count": 90
+    },
+    {
+      "word": "மொழிப",
+      "count": 88
+    },
+    {
+      "word": "என்று",
+      "count": 87
+    },
+    {
+      "word": "முதல்",
+      "count": 86
+    },
+    {
+      "word": "காலை",
+      "count": 85
+    },
+    {
+      "word": "இறுதி",
+      "count": 84
+    },
+    {
+      "word": "பொருள்",
+      "count": 76
+    },
+    {
+      "word": "தோன்றும்",
+      "count": 67
+    },
+    {
+      "word": "இரு",
+      "count": 64
+    },
+    {
+      "word": "உரிய",
+      "count": 61
+    },
+    {
+      "word": "வழி",
+      "count": 61
+    },
+    {
+      "word": "சொல்",
+      "count": 61
+    },
+    {
+      "word": "நிலையும்",
+      "count": 60
+    },
+    {
+      "word": "மெய்",
+      "count": 57
+    },
+    {
+      "word": "வல்லெழுத்து",
+      "count": 53
+    },
+    {
+      "word": "பெயர்",
+      "count": 53
+    },
+    {
+      "word": "பிறவும்",
+      "count": 52
+    },
+    {
+      "word": "பால்",
+      "count": 50
+    },
+    {
+      "word": "அவ்",
+      "count": 50
+    },
+    {
+      "word": "இயற்கை",
+      "count": 50
+    },
+    {
+      "word": "பெயரும்",
+      "count": 50
+    },
+    {
+      "word": "அன்ன",
+      "count": 49
+    },
+    {
+      "word": "எல்லாம்",
+      "count": 48
+    },
+    {
+      "word": "வேற்றுமை",
+      "count": 47
+    },
+    {
+      "word": "அப்",
+      "count": 45
+    },
+    {
+      "word": "ஒரு",
+      "count": 45
+    },
+    {
+      "word": "மரபின்",
+      "count": 44
+    },
+    {
+      "word": "இன்றே",
+      "count": 43
+    },
+    {
+      "word": "வகை",
+      "count": 42
+    },
+    {
+      "word": "வண்ணம்",
+      "count": 42
+    },
+    {
+      "word": "இடை",
+      "count": 41
+    },
+    {
+      "word": "ஆகிய",
+      "count": 40
+    },
+    {
+      "word": "வேண்டும்",
+      "count": 39
+    },
+    {
+      "word": "இலவே",
+      "count": 36
+    },
+    {
+      "word": "சாரியை",
+      "count": 35
+    },
+    {
+      "word": "எழுத்து",
+      "count": 34
+    }
+  ],
+  "letterFrequency": [
+    {
+      "word": "ம்",
+      "count": 4004
+    },
+    {
+      "word": "ன்",
+      "count": 2999
+    },
+    {
+      "word": "வ",
+      "count": 1752
+    },
+    {
+      "word": "ல்",
+      "count": 1669
+    },
+    {
+      "word": "ய",
+      "count": 1567
+    },
+    {
+      "word": "த",
+      "count": 1551
+    },
+    {
+      "word": "அ",
+      "count": 1546
+    },
+    {
+      "word": "இ",
+      "count": 1481
+    },
+    {
+      "word": "எ",
+      "count": 1382
+    },
+    {
+      "word": "ர்",
+      "count": 1321
+    },
+    {
+      "word": "த்",
+      "count": 1298
+    },
+    {
+      "word": "கு",
+      "count": 1213
+    },
+    {
+      "word": "உ",
+      "count": 1133
+    },
+    {
+      "word": "று",
+      "count": 1131
+    },
+    {
+      "word": "க",
+      "count": 1090
+    },
+    {
+      "word": "ரு",
+      "count": 1072
+    },
+    {
+      "word": "து",
+      "count": 1021
+    },
+    {
+      "word": "ற்",
+      "count": 1005
+    },
+    {
+      "word": "ப",
+      "count": 967
+    },
+    {
+      "word": "க்",
+      "count": 951
+    },
+    {
+      "word": "ப்",
+      "count": 926
+    },
+    {
+      "word": "கி",
+      "count": 919
+    },
+    {
+      "word": "டு",
+      "count": 884
+    },
+    {
+      "word": "வி",
+      "count": 841
+    },
+    {
+      "word": "ஆ",
+      "count": 837
+    },
+    {
+      "word": "ள",
+      "count": 755
+    },
+    {
+      "word": "ம",
+      "count": 745
+    },
+    {
+      "word": "ன",
+      "count": 744
+    },
+    {
+      "word": "ர",
+      "count": 736
+    },
+    {
+      "word": "ற",
+      "count": 721
+    },
+    {
+      "word": "பு",
+      "count": 706
+    },
+    {
+      "word": "ண்",
+      "count": 680
+    },
+    {
+      "word": "யு",
+      "count": 667
+    },
+    {
+      "word": "மு",
+      "count": 662
+    },
+    {
+      "word": "தி",
+      "count": 632
+    },
+    {
+      "word": "ழி",
+      "count": 621
+    },
+    {
+      "word": "யி",
+      "count": 607
+    },
+    {
+      "word": "ந்",
+      "count": 600
+    },
+    {
+      "word": "லை",
+      "count": 590
+    },
+    {
+      "word": "னு",
+      "count": 586
+    },
+    {
+      "word": "ரி",
+      "count": 581
+    },
+    {
+      "word": "பி",
+      "count": 564
+    },
+    {
+      "word": "நி",
+      "count": 558
+    },
+    {
+      "word": "றி",
+      "count": 540
+    },
+    {
+      "word": "ல",
+      "count": 533
+    },
+    {
+      "word": "மை",
+      "count": 493
+    },
+    {
+      "word": "ட",
+      "count": 492
+    },
+    {
+      "word": "பெ",
+      "count": 490
+    },
+    {
+      "word": "ள்",
+      "count": 455
+    },
+    {
+      "word": "கா",
+      "count": 452
+    },
+    {
+      "word": "ஒ",
+      "count": 444
+    },
+    {
+      "word": "வே",
+      "count": 427
+    },
+    {
+      "word": "ட்",
+      "count": 420
+    },
+    {
+      "word": "ங்",
+      "count": 390
+    },
+    {
+      "word": "கை",
+      "count": 385
+    },
+    {
+      "word": "ய்",
+      "count": 350
+    },
+    {
+      "word": "சி",
+      "count": 347
+    },
+    {
+      "word": "லு",
+      "count": 345
+    },
+    {
+      "word": "வு",
+      "count": 340
+    },
+    {
+      "word": "டி",
+      "count": 324
+    }
+  ]
+}

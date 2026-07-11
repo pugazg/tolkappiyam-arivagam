@@ -9,6 +9,7 @@ const tools = [
   { href: "/tools/tamil-letters", tamil: "தமிழ் எழுத்து ஆய்வு", en: "Tamil Letter Explorer", desc: "உயிர், மெய், உயிர்மெய், ஆய்தம் — click any letter for its Unicode and modern classification." },
   { href: "/tools/letter-classifier", tamil: "எழுத்து வகைப்படுத்தி", en: "Letter Classifier", desc: "Type any character — Tamil, Grantha, numeral, Latin, emoji — and see a Unicode-aware breakdown." },
   { href: "/tools/matra-explorer", tamil: "மாத்திரை ஆய்வு", en: "Māttirai Explorer", desc: "An educational prototype for basic short/long vowel durations. Clearly bounded, no over-claims." },
+  { href: "/tools/ani-ilakkanam", tamil: "அணி இலக்கணம்", en: "Aṇi Ilakkaṇam", desc: "A reference to Tamil poetic figures (உவமை, உருவகம்…), with உவமை linked to Tolkāppiyam's உவமவியல்." },
 ];
 
 export default function ToolsPage() {

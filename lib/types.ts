@@ -36,6 +36,14 @@ export type ExampleReference = {
   verificationStatus: VerificationStatus;
 };
 
+export type AudioReference = {
+  url: string;
+  reciter?: string | null;
+  license?: string | null;
+  note?: string | null;
+  verificationStatus: VerificationStatus;
+};
+
 export type SourceEdition = {
   publisher: "Project Madurai";
   sourceId: "pmuni0100";
@@ -74,6 +82,8 @@ export type SutraRecord = {
   commentaryReferences: CommentaryReference[];
   examples: ExampleReference[];
   relatedSutras: string[];
+  scholarlyNotes?: string | null;
+  audio?: AudioReference | null;
   editorialStatus: EditorialStatus;
   source: SourceEdition;
   parsingConfidence: ParsingConfidence;
