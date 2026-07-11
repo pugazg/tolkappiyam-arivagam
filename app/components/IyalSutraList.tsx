@@ -1,0 +1,64 @@
+"use client";
+import Link from "next/link";
+import { Bi } from "@/app/components/Bi";
+import { useMemo, useState } from "react";
+import type { SutraRecord } from "@/lib/types.ts";
+
+export function IyalSutraList({ sutras }: { sutras: SutraRecord[] }) {
+  const [q, setQ] = useState("");
+  const [concept, setConcept] = useState<string | null>(null);
+
+  const concepts = useMemo(() => {
+    const m = new Map<string, number>();
+    for (const s of sutras) for (const c of s.concepts) m.set(c, (m.get(c) ?? 0) + 1);
+    return [...m.entries()].sort((a, b) => b[1] - a[1]).slice(0, 14);
+  }, [sutras]);
+
+  const filtered = useMemo(() => {
+    const nq = q.normalize("NFC").toLocaleLowerCase("ta").trim();
+    return sutras.filter((s) => {
+      if (concept && !s.concepts.includes(concept)) return false;
+      if (!nq) return true;
+      return (
+        s.originalText.normalize("NFC").toLocaleLowerCase("ta").includes(nq) ||
+        s.displayNumber === nq ||
+        s.id.includes(nq)
+      );
+    });
+  }, [sutras, q, concept]);
+
+  return (
+    <div>
+      <div style={{ display: "flex", gap: "0.75rem", flexWrap: "wrap", alignItems: "center", margin: "1rem 0" }}>
+        <input
+          className="field"
+          style={{ maxWidth: "22rem" }}
+          placeholder="இந்த இயலில் தேடுக…"
+          value={q}
+          onChange={(e) => setQ(e.target.value)}
+          aria-label="Search within this iyal"
+        />
+        <span className="muted" style={{ fontSize: "0.9rem" }}>{filtered.length} / {sutras.length}</span>
+      </div>
+      {concepts.length > 0 && (
+        <div className="pill-row" style={{ marginBottom: "1rem" }}>
+          <button className="chip" style={{ cursor: "pointer", background: concept === null ? "var(--accent-wash)" : undefined }} onClick={() => setConcept(null)}><Bi ta="அனைத்தும்" en="All" /></button>
+          {concepts.map(([c, n]) => (
+            <button key={c} className="chip" style={{ cursor: "pointer", background: concept === c ? "var(--accent-wash)" : undefined, color: concept === c ? "var(--accent)" : undefined }} onClick={() => setConcept(concept === c ? null : c)}>
+              {c} <span className="muted">{n}</span>
+            </button>
+          ))}
+        </div>
+      )}
+      <div>
+        {filtered.map((s) => (
+          <Link key={s.id} href={`/sutra/${s.id}`} className="sutra-item" style={{ textDecoration: "none", color: "inherit" }}>
+            <span className="sutra-num">{s.displayNumber}</span>
+            <span className="st">{s.originalLines.join(" ")}</span>
+          </Link>
+        ))}
+        {filtered.length === 0 && <p className="muted" style={{ padding: "1rem 0" }}><Bi ta="பொருந்தும் நூற்பா இல்லை. வேறு சொல்லை முயற்சிக்கவும்." en="No matching aphorism. Try another word." /></p>}
+      </div>
+    </div>
+  );
+}

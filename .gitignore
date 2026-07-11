@@ -1,0 +1,17 @@
+# dependencies
+/node_modules
+# next.js
+/.next/
+/out/
+# generated data (regenerated from source via `npm run import:data`)
+/data/generated/*
+!/data/generated/.gitkeep
+/data/source/*.html
+!/data/source/.gitkeep
+# misc
+.DS_Store
+*.pem
+.env*.local
+next-env.d.ts
+.vercel
+*.tsbuildinfo
