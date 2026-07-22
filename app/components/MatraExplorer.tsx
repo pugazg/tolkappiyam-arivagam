@@ -39,7 +39,7 @@ export function MatraExplorer() {
         <div className="notice" style={{ marginTop: "1rem", borderLeftColor: "var(--gold)" }}>
           <Bi
             ta={<>இந்தக் கணிப்பில் கிரந்த/நீட்டிய தமிழ் எழுத்து(கள்) <strong>நவீன விரிவாக்க விதியின்</strong> கீழ் கணக்கிடப்பட்டுள்ளன — தொல்காப்பியத்தின் பதினெண் மெய்யெழுத்து வகைப்பாட்டின் பகுதி அல்ல.</>}
-            en={<>One or more Tamil-script extended / Grantha letters here were counted under the <strong>modern extended rule</strong> — not part of Tolkāppiyam's classical 18-consonant inventory.</>}
+            en={<>One or more Tamil-script extended / Grantha letters here were counted under the <strong>modern extended rule</strong> — not part of Tolkāppiyam&rsquo;s classical 18-consonant inventory.</>}
           />
         </div>
       )}

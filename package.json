@@ -16,6 +16,7 @@
     "start": "next start",
     "lint": "eslint .",
     "typecheck": "tsc --noEmit",
+    "validate:editorial": "node scripts/validate-editorial.mjs",
     "test": "node --test tests/*.test.mjs"
   },
   "dependencies": {

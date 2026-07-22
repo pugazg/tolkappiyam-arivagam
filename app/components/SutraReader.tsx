@@ -99,7 +99,6 @@ export function SutraReader({ sutra, related }: { sutra: SutraRecord; related: R
         {active === "audio" && (
           sutra.audio
             ? <div>
-                {/* eslint-disable-next-line jsx-a11y/media-has-caption */}
                 <audio controls src={sutra.audio.url} style={{ width: "100%", maxWidth: "28rem" }} />
                 <p className="muted" style={{ fontSize: "0.82rem", marginTop: "0.5rem" }}>
                   {sutra.audio.reciter ? `ஓதியவர்: ${sutra.audio.reciter}. ` : ""}
