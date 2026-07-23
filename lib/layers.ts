@@ -46,6 +46,13 @@ export type SourceSutraRecord = {
 // ---- Editorial layer (human-owned) ----
 export type EditorialAnnotationStatus = "not-started" | "draft" | "reviewed" | "verified";
 
+// Human editorial review status. Same shape as the annotation status; this is the
+// name used at the presentation boundary ("Editorial review status /
+// பதிப்பாசிரியர் ஆய்வு நிலை"). It is ENTIRELY SEPARATE from `SourceProcessingStatus`
+// (importer processing) and from `ParsingConfidence` (segmentation reliability),
+// and must never be inferred from either.
+export type EditorialReviewStatus = EditorialAnnotationStatus;
+
 export type FieldProvenance = {
   layer: "editorial";
   editorId?: string;   // opaque/role id; never expose personal data by default

@@ -10,10 +10,56 @@ import type {
   EditorialRevision,
 } from "./layers.ts";
 
-const ROOT = process.cwd();
-const EDITORIAL_SUTRA_DIR = path.join(ROOT, "data", "editorial", "sutras");
-const REVIEW_HISTORY_DIR = path.join(ROOT, "data", "editorial", "review-history");
-const DERIVED_SUTRA_DIR = path.join(ROOT, "data", "derived", "sutras");
+// The three human/tooling-owned directories. Injectable so tests can point at a
+// throwaway fixture directory WITHOUT writing fixture prose into the real
+// data/editorial/** tree (a hard project rule). Production defaults are derived
+// from process.cwd() and are unchanged from before this became injectable.
+export type EditorialDirs = {
+  editorial: string;
+  derived: string;
+  reviewHistory: string;
+};
+
+export function defaultEditorialDirs(): EditorialDirs {
+  const root = process.cwd();
+  return {
+    editorial: path.join(root, "data", "editorial", "sutras"),
+    derived: path.join(root, "data", "derived", "sutras"),
+    reviewHistory: path.join(root, "data", "editorial", "review-history"),
+  };
+}
+
+// ---- Build-time directory index ------------------------------------------
+// Without this, rendering 1,602 sutra pages + 1,602 API routes would issue
+// thousands of failing readFileSync() calls (ENOENT) for absent editorial and
+// derived files. Instead we readdir each directory ONCE per process and cache
+// the set of present ids; a file is only read when its id is actually present.
+// Cache is keyed by absolute directory path so injected fixture dirs stay
+// isolated from the production dirs.
+const dirIndexCache = new Map<string, Set<string>>();
+
+function indexOf(dir: string): Set<string> {
+  const cached = dirIndexCache.get(dir);
+  if (cached) return cached;
+  let ids: Set<string>;
+  try {
+    ids = new Set(
+      fs
+        .readdirSync(dir)
+        .filter((f) => f.endsWith(".json"))
+        .map((f) => f.slice(0, -".json".length)),
+    );
+  } catch {
+    ids = new Set(); // directory absent = no annotations, a valid empty state
+  }
+  dirIndexCache.set(dir, ids);
+  return ids;
+}
+
+// Test-only: forget cached directory listings (e.g. after creating fixtures).
+export function clearEditorialIndexCache(): void {
+  dirIndexCache.clear();
+}
 
 function readJson<T>(file: string): T | null {
   try {
@@ -23,14 +69,28 @@ function readJson<T>(file: string): T | null {
   }
 }
 
-export function getEditorialAnnotation(sutraId: string): SutraEditorialAnnotation | null {
-  return readJson<SutraEditorialAnnotation>(path.join(EDITORIAL_SUTRA_DIR, `${sutraId}.json`));
+export function getEditorialAnnotation(
+  sutraId: string,
+  dirs: EditorialDirs = defaultEditorialDirs(),
+): SutraEditorialAnnotation | null {
+  if (!indexOf(dirs.editorial).has(sutraId)) return null;
+  return readJson<SutraEditorialAnnotation>(path.join(dirs.editorial, `${sutraId}.json`));
 }
-export function getDerivedMetadata(sutraId: string): SutraDerivedMetadata | null {
-  return readJson<SutraDerivedMetadata>(path.join(DERIVED_SUTRA_DIR, `${sutraId}.json`));
+
+export function getDerivedMetadata(
+  sutraId: string,
+  dirs: EditorialDirs = defaultEditorialDirs(),
+): SutraDerivedMetadata | null {
+  if (!indexOf(dirs.derived).has(sutraId)) return null;
+  return readJson<SutraDerivedMetadata>(path.join(dirs.derived, `${sutraId}.json`));
 }
-export function getReviewHistory(sutraId: string): EditorialRevision[] {
-  return readJson<EditorialRevision[]>(path.join(REVIEW_HISTORY_DIR, `${sutraId}.json`)) ?? [];
+
+export function getReviewHistory(
+  sutraId: string,
+  dirs: EditorialDirs = defaultEditorialDirs(),
+): EditorialRevision[] {
+  if (!indexOf(dirs.reviewHistory).has(sutraId)) return [];
+  return readJson<EditorialRevision[]>(path.join(dirs.reviewHistory, `${sutraId}.json`)) ?? [];
 }
 
 export type SutraViewModel<TSource> = {
@@ -40,10 +100,14 @@ export type SutraViewModel<TSource> = {
 };
 
 // Merge without flattening: provenance of each layer is preserved.
-export function buildSutraViewModel<TSource>(source: TSource, sutraId: string): SutraViewModel<TSource> {
+export function buildSutraViewModel<TSource>(
+  source: TSource,
+  sutraId: string,
+  dirs: EditorialDirs = defaultEditorialDirs(),
+): SutraViewModel<TSource> {
   return {
     source,
-    editorial: getEditorialAnnotation(sutraId),
-    derived: getDerivedMetadata(sutraId),
+    editorial: getEditorialAnnotation(sutraId, dirs),
+    derived: getDerivedMetadata(sutraId, dirs),
   };
 }

@@ -4,7 +4,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { adhikarams, getAdhikaram, getAdhikaramSutras, getIyalsFor } from "@/lib/data.ts";
 import { Breadcrumbs } from "../../components/Breadcrumbs";
-import { StatusBadge } from "../../components/Badges";
+import { SourceProcessingStatusBadge } from "../../components/Badges";
 
 export function generateStaticParams() {
   return adhikarams.map((a) => ({ adhikaram: a.id }));
@@ -59,7 +59,7 @@ export default async function AdhikaramPage({ params }: { params: Promise<{ adhi
       </div>
 
       <div className="notice" style={{ marginTop: "2rem" }}>
-        <StatusBadge status="segmented" /> &nbsp; <Bi ta="கட்டமைப்பும் நூற்பாப் பிரிப்பும் மூலத்திலிருந்து பெறப்பட்டவை. விளக்க/உரை அடுக்குகள் இன்னும் சேர்க்கப்படவில்லை." en="Structure and aphorism (நூற்பா) segmentation are derived from the source. Explanations and commentary layers are not yet added." />
+        <SourceProcessingStatusBadge status="segmented" /> &nbsp; <Bi ta="கட்டமைப்பும் நூற்பாப் பிரிப்பும் மூலத்திலிருந்து பெறப்பட்டவை. விளக்க/உரை அடுக்குகள் இன்னும் சேர்க்கப்படவில்லை." en="Structure and aphorism (நூற்பா) segmentation are derived from the source. Explanations and commentary layers are not yet added." />
         &nbsp;<Link href="/tools/tamil-letters"><Bi ta="தொடர்புடைய கருவி: தமிழ் எழுத்து ஆய்வு" en="Related tool: Tamil Letter Explorer" /> →</Link>
       </div>
     </div>

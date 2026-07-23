@@ -84,12 +84,9 @@ export function getAdjacentSutras(id: string) {
 export function getFeaturedSutra() {
   return getSutra("ezhuthu-noolmarabu-001") ?? sutras[0] ?? null;
 }
-export function getIyalPath(iyal: IyalRecord) {
-  return `/adhikaram/${iyal.adhikaramId}/${iyal.id}`;
-}
-export function getSutraPath(id: string) {
-  return `/sutra/${id}`;
-}
+// Route construction lives in lib/routes.ts (single source of truth). Do not
+// re-add path helpers here — hard-coded/duplicated routes are what let canonical
+// links silently drift or 404. See tests/routes.test.mjs.
 export function searchSutras(query: string, filters: SearchFilters = {}) {
   return searchSutraRecords(query, sutras, filters);
 }

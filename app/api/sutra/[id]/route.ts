@@ -1,4 +1,5 @@
 import { getSutra, sutras } from "@/lib/data.ts";
+import { buildSutraViewModel } from "@/lib/editorial.ts";
 
 // Machine-readable JSON for a single நூற்பா, at a stable address:
 //   /api/sutra/<id>   e.g. /api/sutra/ezhuthu-noolmarabu-001
@@ -18,5 +19,9 @@ export async function GET(
   if (!sutra) {
     return Response.json({ error: "நூற்பா not found", id }, { status: 404 });
   }
-  return Response.json(sutra);
+  // Backward-compatible: all existing top-level SutraRecord fields are preserved
+  // verbatim. `layers` is ADDITIVE — the merged editorial + machine-derived
+  // layers (each null when absent), never overriding or renaming source keys.
+  const { editorial, derived } = buildSutraViewModel(sutra, id);
+  return Response.json({ ...sutra, layers: { editorial, derived } });
 }

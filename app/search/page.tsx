@@ -4,7 +4,7 @@ import Link from "next/link";
 import { adhikarams, iyals, searchSutras } from "@/lib/data.ts";
 import { highlightSegments } from "@/lib/search.ts";
 import { Breadcrumbs } from "../components/Breadcrumbs";
-import { StatusBadge } from "../components/Badges";
+import { SourceProcessingStatusBadge } from "../components/Badges";
 import { TranslitInput } from "../components/TranslitInput";
 
 export const metadata: Metadata = {
@@ -90,7 +90,7 @@ export default async function SearchPage({ searchParams }: { searchParams: SP })
               <span className="muted" style={{ fontSize: "0.85rem" }}>
                 {sutra.adhikaramTamil} · {sutra.iyalEditorialTamil ?? sutra.iyalTamil} · நூற்பா {sutra.displayNumber}
               </span>
-              <StatusBadge status={sutra.editorialStatus} />
+              <SourceProcessingStatusBadge status={sutra.editorialStatus} />
             </div>
             <p className="tamil-serif" style={{ margin: 0, fontSize: "1.1rem", lineHeight: 1.9 }}>
               {highlightSegments(sutra.originalLines.join(" "), filters.exact ? q : q).map((seg, k) =>

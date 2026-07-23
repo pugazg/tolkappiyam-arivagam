@@ -1,8 +1,10 @@
 "use client";
 import { useId, useState } from "react";
 import Link from "next/link";
-import type { SutraRecord } from "@/lib/types.ts";
+import type { AudioReference } from "@/lib/types.ts";
+import type { ResolvedSutraView, ResolvedField, FieldLayer } from "@/lib/sutra-view.ts";
 import { EditorialPlaceholder } from "./EditorialPlaceholder";
+import { ProvenanceNote } from "./ProvenanceNote";
 
 type Related = { id: string; number: string; text: string };
 
@@ -19,9 +21,41 @@ const TABS = [
   { key: "audio", label: "ஒலி" },
 ] as const;
 
-export function SutraReader({ sutra, related }: { sutra: SutraRecord; related: Related[] }) {
+const relatedLayerNote: Record<FieldLayer, string> = {
+  source: "Listed in the source layer.",
+  "parser-derived": "Related by shared vocabulary within the same இயல் (a mechanical lexical link, not an interpretive claim).",
+  "machine-derived": "Related by shared vocabulary within the same இயல் (a mechanical lexical link, not an interpretive claim).",
+  editorial: "Related நூற்பாக்கள் curated by an editor.",
+};
+
+export function SutraReader({
+  view,
+  related,
+  relatedLayer,
+  audio,
+}: {
+  view: ResolvedSutraView;
+  related: Related[];
+  relatedLayer: FieldLayer;
+  audio: AudioReference | null;
+}) {
   const [active, setActive] = useState<string>("moolam");
   const base = useId();
+  const f = view.fields;
+
+  const prose = (
+    field: ResolvedField<string> | null,
+    placeholder: React.ReactNode,
+    className = "prose",
+  ) =>
+    field ? (
+      <div>
+        <p className={className}>{field.value}</p>
+        <ProvenanceNote field={field} />
+      </div>
+    ) : (
+      placeholder
+    );
 
   return (
     <div>
@@ -44,48 +78,49 @@ export function SutraReader({ sutra, related }: { sutra: SutraRecord; related: R
 
       <div role="tabpanel" id={`${base}-panel-${active}`} aria-labelledby={`${base}-tab-${active}`} className="panel">
         {active === "moolam" && (
-          <p className="source-text lg">{sutra.originalLines.join("\n")}</p>
+          <p className="source-text lg">{view.originalLines.join("\n")}</p>
         )}
-        {active === "sol" && (
-          sutra.wordSeparatedText
-            ? <p className="source-text">{sutra.wordSeparatedText}</p>
-            : <EditorialPlaceholder english="Word-separated (சொல் பிரிப்பு) text is added by editors after review; it is not auto-generated." />
+        {active === "sol" && prose(
+          f.wordSeparatedText,
+          <EditorialPlaceholder english="Word-separated (சொல் பிரிப்பு) text is added by editors after review; it is not auto-generated." />,
+          "source-text",
         )}
-        {active === "transliteration" && (
-          sutra.transliteration
-            ? <p className="prose">{sutra.transliteration}</p>
-            : <EditorialPlaceholder english="A verified romanised transliteration has not been added for this நூற்பா yet." />
+        {active === "transliteration" && prose(
+          f.transliteration,
+          <EditorialPlaceholder english="A verified romanised transliteration has not been added for this நூற்பா yet." />,
         )}
-        {active === "eliya" && (
-          sutra.simpleTamilExplanation
-            ? <p className="prose tamil">{sutra.simpleTamilExplanation}</p>
-            : <EditorialPlaceholder english="A simple Tamil explanation has not been added for this நூற்பா yet." />
+        {active === "eliya" && prose(
+          f.simpleTamilExplanation,
+          <EditorialPlaceholder english="A simple Tamil explanation has not been added for this நூற்பா yet." />,
+          "prose tamil",
         )}
-        {active === "vivara" && (
-          sutra.detailedTamilExplanation
-            ? <p className="prose tamil">{sutra.detailedTamilExplanation}</p>
-            : <EditorialPlaceholder english="A detailed Tamil explanation has not been added for this நூற்பா yet." />
+        {active === "vivara" && prose(
+          f.detailedTamilExplanation,
+          <EditorialPlaceholder english="A detailed Tamil explanation has not been added for this நூற்பா yet." />,
+          "prose tamil",
         )}
-        {active === "english" && (
-          sutra.englishExplanation
-            ? <p className="prose">{sutra.englishExplanation}</p>
-            : <EditorialPlaceholder tamil="Explanation under editorial review" english="An English explanation has not been added for this நூற்பா yet." />
+        {active === "english" && prose(
+          f.englishExplanation,
+          <EditorialPlaceholder tamil="Explanation under editorial review" english="An English explanation has not been added for this நூற்பா yet." />,
         )}
         {active === "karuthu" && (
-          sutra.concepts.length
-            ? <div className="pill-row">{sutra.concepts.map((c) => <Link key={c} className="chip" href={`/search?q=${encodeURIComponent(c)}`}>{c}</Link>)}</div>
+          f.concepts
+            ? <div>
+                <div className="pill-row">{f.concepts.value.map((c) => <Link key={c} className="chip" href={`/search?q=${encodeURIComponent(c)}`}>{c}</Link>)}</div>
+                <ProvenanceNote field={f.concepts} />
+              </div>
             : <EditorialPlaceholder english="No source-attested keyword concepts were detected for this நூற்பா." />
         )}
-        {active === "notes" && (
-          sutra.scholarlyNotes
-            ? <p className="prose tamil">{sutra.scholarlyNotes}</p>
-            : <EditorialPlaceholder english="Editorial / scholarly notes for this நூற்பா have not been added yet. These are distinct from the automatic parsing notes shown in the metadata." />
+        {active === "notes" && prose(
+          f.scholarlyNotes,
+          <EditorialPlaceholder english="Editorial / scholarly notes for this நூற்பா have not been added yet. These are distinct from the automatic parsing notes shown in the metadata." />,
+          "prose tamil",
         )}
         {active === "thodarbu" && (
           related.length
             ? <div>
                 <p className="muted" style={{ fontSize: "0.85rem", marginTop: 0 }}>
-                  Related by shared vocabulary within the same இயல் (a mechanical lexical link, not an interpretive claim).
+                  {relatedLayerNote[relatedLayer]}
                 </p>
                 {related.map((r) => (
                   <Link key={r.id} href={`/sutra/${r.id}`} className="sutra-item" style={{ textDecoration: "none", color: "inherit" }}>
@@ -97,12 +132,12 @@ export function SutraReader({ sutra, related }: { sutra: SutraRecord; related: R
             : <EditorialPlaceholder english="No closely related நூற்பாக்கள் were detected by shared vocabulary." />
         )}
         {active === "audio" && (
-          sutra.audio
+          audio
             ? <div>
-                <audio controls src={sutra.audio.url} style={{ width: "100%", maxWidth: "28rem" }} />
+                <audio controls src={audio.url} style={{ width: "100%", maxWidth: "28rem" }} />
                 <p className="muted" style={{ fontSize: "0.82rem", marginTop: "0.5rem" }}>
-                  {sutra.audio.reciter ? `ஓதியவர்: ${sutra.audio.reciter}. ` : ""}
-                  {sutra.audio.license ? `உரிமம்: ${sutra.audio.license}.` : ""}
+                  {audio.reciter ? `ஓதியவர்: ${audio.reciter}. ` : ""}
+                  {audio.license ? `உரிமம்: ${audio.license}.` : ""}
                 </p>
               </div>
             : <EditorialPlaceholder english="Recited audio for this நூற்பா has not been added yet. Audio will be attached with reciter and licence details when available." />

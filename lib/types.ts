@@ -10,6 +10,18 @@ export type EditorialStatus =
   | "explained"
   | "verified";
 
+// Source-processing status: how far the *importer* has processed a நூற்பா from the
+// raw source. These values are importer-generated and do NOT indicate human
+// editorial review (that is `EditorialReviewStatus` in lib/layers.ts).
+//
+// LEGACY NAMING: the stored field on `SutraRecord` is still called
+// `editorialStatus` (see below). Renaming the stored field is a breaking change
+// touching generated data and search filters, so it is deferred. Until then,
+// treat `editorialStatus` as the *source-processing* status and present it only
+// through `SourceProcessingStatusBadge` under the "Source processing status /
+// மூலச் செயலாக்க நிலை" label — never as human editorial review.
+export type SourceProcessingStatus = EditorialStatus;
+
 export type ParsingConfidence = "high" | "medium" | "low";
 
 export type VerificationStatus =

@@ -9,8 +9,10 @@ import {
   sutras,
 } from "@/lib/data.ts";
 import { compactCitation, fullCitation } from "@/lib/citation.ts";
+import { buildSutraViewModel } from "@/lib/editorial.ts";
+import { resolveSutraView, resolveRelatedIds } from "@/lib/sutra-view.ts";
 import { Breadcrumbs } from "../../components/Breadcrumbs";
-import { StatusBadge, ConfidenceBadge } from "../../components/Badges";
+import { SourceProcessingStatusBadge, EditorialReviewStatusBadge, ConfidenceBadge } from "../../components/Badges";
 import { SutraReader } from "../../components/SutraReader";
 import { CitationBlock } from "../../components/CitationBlock";
 import { CopyButton } from "../../components/CopyButton";
@@ -38,7 +40,13 @@ export default async function SutraPage({ params }: { params: Promise<{ id: stri
   if (!s) notFound();
   const iyal = getIyal(s.iyalId);
   const { previous, next } = getAdjacentSutras(s.id);
-  const related = s.relatedSutras
+
+  // Merge the three layers without flattening (provenance preserved), then
+  // resolve to serializable presentation props for the client reader.
+  const vm = buildSutraViewModel(s, s.id);
+  const view = resolveSutraView(vm);
+  const { ids: relatedIds, layer: relatedLayer } = resolveRelatedIds(vm);
+  const related = relatedIds
     .map((rid) => getSutra(rid))
     .filter((r): r is NonNullable<typeof r> => Boolean(r))
     .map((r) => ({ id: r.id, number: r.displayNumber, text: r.originalLines.join(" ") }));
@@ -70,7 +78,11 @@ export default async function SutraPage({ params }: { params: Promise<{ id: stri
         </p>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end", flexWrap: "wrap", gap: "0.75rem" }}>
           <h1 style={{ margin: "0.2rem 0 0" }}><Bi ta={`நூற்பா ${s.displayNumber}`} en={`Aphorism ${s.displayNumber}`} /></h1>
-          <div className="pill-row"><StatusBadge status={s.editorialStatus} /><ConfidenceBadge confidence={s.parsingConfidence} /></div>
+          <div className="pill-row">
+            <SourceProcessingStatusBadge status={view.sourceProcessingStatus} />
+            <EditorialReviewStatusBadge status={view.editorialReviewStatus} />
+            <ConfidenceBadge confidence={view.parsingConfidence} />
+          </div>
         </div>
         <p className="muted" style={{ fontSize: "0.8rem", marginTop: "0.4rem" }}><Bi ta="நிலையான அடையாளம்" en="Stable ID" />: <code>{s.id}</code></p>
       </header>
@@ -92,7 +104,7 @@ export default async function SutraPage({ params }: { params: Promise<{ id: stri
         </div>
       )}
 
-      <SutraReader sutra={s} related={related} />
+      <SutraReader view={view} related={related} relatedLayer={relatedLayer} audio={s.audio ?? null} />
 
       <div className="grid grid-2" style={{ marginTop: "1.5rem" }}>
         <CitationBlock full={fullCitation(s)} compact={compactCitation(s)} />
@@ -105,8 +117,12 @@ export default async function SutraPage({ params }: { params: Promise<{ id: stri
             <dt><Bi ta="வரிகள்" en="Lines" /></dt><dd>{s.lineCount}</dd>
             <dt><Bi ta="சொற்கள்" en="Words" /></dt><dd>{s.wordCount}</dd>
             <dt><Bi ta="கருத்துகள்" en="Concepts" /></dt><dd>{s.concepts.length ? s.concepts.join(", ") : "—"}</dd>
-            <dt><Bi ta="நம்பகத்தன்மை" en="Confidence" /></dt><dd>{s.parsingConfidence}</dd>
-            <dt><Bi ta="பதிப்பு நிலை" en="Editorial status" /></dt><dd>{s.editorialStatus}</dd>
+            <dt><Bi ta="பகுப்பாய்வு நம்பகத்தன்மை" en="Parsing confidence" /></dt>
+            <dd><ConfidenceBadge confidence={view.parsingConfidence} /></dd>
+            <dt><Bi ta="மூலச் செயலாக்க நிலை" en="Source processing status" /></dt>
+            <dd><SourceProcessingStatusBadge status={view.sourceProcessingStatus} /></dd>
+            <dt><Bi ta="பதிப்பாசிரியர் ஆய்வு நிலை" en="Editorial review status" /></dt>
+            <dd><EditorialReviewStatusBadge status={view.editorialReviewStatus} /></dd>
           </dl>
           <p className="muted" style={{ fontSize: "0.8rem", marginTop: "0.75rem" }}>
             Source: {s.source.publisher} · {s.source.sourceId}
